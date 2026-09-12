@@ -96,6 +96,14 @@ public class BleManager {
         return bluetoothAdapter.isEnabled();
     }
 
+    public int getConnectedPeerCount() {
+        synchronized (connectedDevices) {
+            synchronized (clientCharacteristics) {
+                return connectedDevices.size() + clientCharacteristics.size();
+            }
+        }
+    }
+
     public void startAdvertising(byte[] payload) {
         if (!isBluetoothReady()) {
             if (listener != null) {

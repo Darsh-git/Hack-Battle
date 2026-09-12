@@ -23,6 +23,15 @@
         android:textColor="#52606D"
         android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/tv_network_health"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Network: checking..."
+        android:textColor="#52606D"
+        android:textSize="13sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,6 +75,29 @@
             android:text="Pending Relays" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinner_packet_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/et_packet_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:hint="Search packets"
+            android:inputType="text"
+            android:maxLines="1" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_packet_count"
         android:layout_width="match_parent"
@@ -76,6 +108,16 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/tv_empty_packets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="No packets received yet"
+        android:textColor="#52606D"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -84,12 +126,6 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp" />
-
-    <Button
-        android:id="@+id/btn_remove_expired"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Remove Expired Packets" />
 
     <EditText
         android:id="@+id/etSender"
