@@ -30,5 +30,8 @@
         <activity
             android:name=".GattReportActivity"
             android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
     </application>
 </manifest>

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
 import com.example.bleprototype.ble.BleManager;
@@ -76,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences preferences = getSharedPreferences("app_preferences", MODE_PRIVATE);
+        AppCompatDelegate.setDefaultNightMode(preferences.getBoolean("dark_theme", false)
+            ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -93,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
         recyclerView.setAdapter(packetAdapter);
 
         advertisingButton = findViewById(R.id.btn_start_advertising);
+        findViewById(R.id.btn_settings).setOnClickListener(v ->
+            startActivity(new Intent(this, SettingsActivity.class)));
         Button scanningButton = findViewById(R.id.btn_start_scanning);
         Button allPackets = findViewById(R.id.btn_filter_all);
         Button pendingPackets = findViewById(R.id.btn_filter_pending);

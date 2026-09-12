@@ -4,15 +4,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F7F8FA">
+    android:background="@color/screen_background">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="BLE Packet Monitor"
-        android:textColor="#17212B"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BLE Packet Monitor"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Settings"
+            android:src="@android:drawable/ic_menu_preferences" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_connection_status"
@@ -20,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Bluetooth ready • Monitoring idle"
-        android:textColor="#52606D"
+        android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
     <TextView
@@ -29,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Network: checking..."
-        android:textColor="#52606D"
+        android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
     <LinearLayout
@@ -64,6 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#000000"
             android:text="All Packets" />
 
         <Button
@@ -94,6 +111,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:hint="Search packets"
+            android:textColorHint="@color/text_hint"
             android:inputType="text"
             android:maxLines="1" />
     </LinearLayout>
@@ -104,7 +122,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Packets"
-        android:textColor="#17212B"
+        android:textColor="@color/text_primary"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -115,7 +133,7 @@
         android:gravity="center"
         android:padding="24dp"
         android:text="No packets received yet"
-        android:textColor="#52606D"
+        android:textColor="@color/text_secondary"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
