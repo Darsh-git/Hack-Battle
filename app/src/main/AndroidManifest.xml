@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BLEPrototype">
         <activity
-            android:name=".HomePageActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,16 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".GattReportActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ResponderLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ResponderDashboardActivity"
             android:exported="false" />
     </application>
 </manifest>
