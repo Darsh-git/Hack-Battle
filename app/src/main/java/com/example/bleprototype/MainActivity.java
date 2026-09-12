@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
         findViewById(R.id.btn_settings).setOnClickListener(v ->
             startActivity(new Intent(this, SettingsActivity.class)));
         Button scanningButton = findViewById(R.id.btn_start_scanning);
-        Button allPackets = findViewById(R.id.btn_filter_all);
-        Button pendingPackets = findViewById(R.id.btn_filter_pending);
         Spinner packetFilter = findViewById(R.id.spinner_packet_filter);
         packetFilter.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
                 new String[]{"All packets", "Pending relays", "Relayed", "Critical"}));
@@ -135,12 +133,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
         });
         advertisingButton.setOnClickListener(v -> toggleAdvertising());
         scanningButton.setOnClickListener(v -> toggleScanning(scanningButton));
-        allPackets.setOnClickListener(v -> {
-            packetFilter.setSelection(0);
-        });
-        pendingPackets.setOnClickListener(v -> {
-            packetFilter.setSelection(1);
-        });
 
         if (requestNeededPermissions()) {
             initializeBleManager();
