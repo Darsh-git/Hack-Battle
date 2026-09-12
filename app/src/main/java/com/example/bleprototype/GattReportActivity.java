@@ -194,14 +194,15 @@ public class GattReportActivity extends AppCompatActivity {
 
         PacketRepository repository = new PacketRepository(this);
         boolean saved = repository.saveIfNew(packet);
-        repository.close();
         if (saved) {
             bleManager.relayToConnectedPeers(packet);
+            repository.markRelayed(packet.getPacketId(), packet.getTtl());
             Toast.makeText(this, "Report queued for nearby GATT peers", Toast.LENGTH_LONG).show();
             finish();
         } else {
             Toast.makeText(this, "Could not save report", Toast.LENGTH_LONG).show();
         }
+        repository.close();
     }
 
     private String text(EditText input) {

@@ -11,12 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
     private PacketAdapter packetAdapter;
     private TextView packetCountView;
     private TextView connectionStatusView;
-    private Spinner packetTypeInput;
-    private Spinner packetSeverityInput;
     private Button advertisingButton;
     private boolean pendingOnly;
     private boolean scanning;
@@ -69,12 +62,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
 
         packetCountView = findViewById(R.id.tv_packet_count);
         connectionStatusView = findViewById(R.id.tv_connection_status);
-        packetTypeInput = findViewById(R.id.et_packet_type);
-        packetSeverityInput = findViewById(R.id.et_packet_severity);
-        packetTypeInput.setAdapter(createSpinnerAdapter(
-            new String[]{"MEDICAL", "FIRE", "FLOOD", "ACCIDENT", "EARTHQUAKE", "SHELTER", "OTHER"}));
-        packetSeverityInput.setAdapter(createSpinnerAdapter(
-            new String[]{"LOW", "MEDIUM", "CRITICAL"}));
         packetRepository = new PacketRepository(this);
 
         androidx.recyclerview.widget.RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -145,63 +132,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
         }
     }
 
-    private ArrayAdapter<String> createSpinnerAdapter(String[] values) {
-
-    return new ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item,
-            values
-    ) {
-
-        @Override
-        public View getView(
-                int position,
-                View convertView,
-                ViewGroup parent) {
-
-            TextView view = (TextView) super.getView(
-                    position,
-                    convertView,
-                    parent
-            );
-
-            view.setTextColor(0xFF101828);
-            view.setTextSize(16);
-            view.setGravity(android.view.Gravity.CENTER_VERTICAL);
-
-            return view;
-        }
-
-        @Override
-        public View getDropDownView(
-                int position,
-                View convertView,
-                ViewGroup parent) {
-
-            TextView view = (TextView) super.getDropDownView(
-                    position,
-                    convertView,
-                    parent
-            );
-
-            view.setTextColor(0xFF101828);
-            view.setTextSize(16);
-            view.setGravity(android.view.Gravity.CENTER_VERTICAL);
-
-            view.setPadding(
-                    20,
-                    18,
-                    20,
-                    18
-            );
-
-            view.setBackgroundColor(0xFFFFFFFF);
-
-            return view;
-        }
-    };
-}
-
     private void toggleScanning(Button scanningButton) {
         if (scanning) {
             if (bleManager == null) {
@@ -229,35 +159,6 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
 
     private void toggleAdvertising() {
         openGattReport();
-    }
-
-    private void advertiseNewPacket() {
-        if (bleManager == null || !bleManager.isBluetoothReady()) {
-            log("Bluetooth is unavailable, disabled, or not permitted.");
-            return;
-        }
-        String type = packetTypeInput.getSelectedItem().toString();
-        String severity = packetSeverityInput.getSelectedItem().toString();
-        if (!packetManager.isSupportedType(type) ||
-                !("LOW".equals(severity) || "MEDIUM".equals(severity) || "CRITICAL".equals(severity)) ||
-                INITIAL_TTL < 1 || INITIAL_TTL > 255) {
-            Toast.makeText(this, "Type: MEDICAL, FIRE, FLOOD, ACCIDENT, EARTHQUAKE, SHELTER, or OTHER", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        long now = System.currentTimeMillis();
-        EmergencyPacket packet = new EmergencyPacket(packetManager.generatePacketId(), type, severity,
-                "Unknown", now, now, INITIAL_TTL, "local", 0, "PENDING");
-        databaseExecutor.execute(() -> {
-            boolean isNew = packetRepository.saveIfNew(packet);
-            runOnUiThread(() -> {
-                if (isNew) {
-                    relayManager.markSeen(packet.getPacketId());
-                    refreshPackets();
-                }
-                advertise(packet, isNew ? "Created and advertising" : "Duplicate packet");
-            });
-        });
     }
 
     private void advertise(EmergencyPacket packet, String action) {
@@ -308,6 +209,10 @@ public class MainActivity extends AppCompatActivity implements BleManager.Listen
         relayHandler.postDelayed(() -> {
             bleManager.relayToConnectedPeers(forwardedPacket);
             advertise(forwardedPacket, "Relaying after " + delay + " ms");
+            databaseExecutor.execute(() -> {
+                packetRepository.markRelayed(receivedPacket.getPacketId(), forwardedPacket.getTtl());
+                runOnUiThread(this::refreshPackets);
+            });
         }, delay);
         log("Scheduled relay of " + forwardedPacket.getPacketId() + " with TTL=" + forwardedPacket.getTtl());
     }

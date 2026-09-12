@@ -111,13 +111,13 @@ public class PacketRepository extends SQLiteOpenHelper {
         return readPackets("status=? AND ttl>0", new String[]{"PENDING"});
     }
 
-    public synchronized void markRelayed(String packetId) {
+    public synchronized void markRelayed(String packetId, int ttl) {
         if (packetId == null) {
             return;
         }
         getWritableDatabase().execSQL(
-                "UPDATE packets SET status='RELAYED', relay_count=relay_count+1 WHERE packet_id=?",
-                new Object[]{packetId});
+                "UPDATE packets SET status='RELAYED', ttl=?, relay_count=relay_count+1 WHERE packet_id=?",
+                new Object[]{ttl, packetId});
     }
 
     public synchronized int removeExpiredPackets() {
